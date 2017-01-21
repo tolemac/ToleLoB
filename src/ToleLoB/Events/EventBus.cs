@@ -53,10 +53,7 @@ namespace ToleLoB.Events
             where TEvent : EventBase
         {
             return GetHandlerRegistrations<TEvent>()
-                .Select(r =>
-                {
-                    return r.HandlerType;
-                })
+                .Select(r => r.HandlerType)
                 .ToArray();
         }
 
