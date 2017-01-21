@@ -1,4 +1,5 @@
 using System;
+using ToleLoB.DependencyResolver;
 
 namespace ToleLoB.Events.Tests
 {
@@ -42,6 +43,18 @@ namespace ToleLoB.Events.Tests
         public override void Run(CreatePersonEvent ev)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class ObjectCreatorResolver : IDependencyResolver
+    {
+        public object Resolve(Type type)
+        {
+            return Activator.CreateInstance(type);
+        }
+        public TType Resolve<TType>()
+        {
+            return Activator.CreateInstance<TType>();
         }
     }
 }

@@ -4,12 +4,12 @@ namespace ToleLoB.Events.Tests
 {
     public class EventBusRegistration
     {
-        //private EventBus eventBus = new EventBus();
+        private ObjectCreatorResolver _resolver = new ObjectCreatorResolver();
 
         [Fact]
         public void HaveToFindHandlerOfConcreteEventType_RegisteredByType()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             eventBus.RegisterHandler<SimpleEventClass>(typeof(SimpleEventHandler));
             Assert.True(eventBus.HasHandlerFor<SimpleEventClass>());
         }
@@ -17,7 +17,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void HaveToFindHandlerOfDerivedEventType_RegisteredByType()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             eventBus.RegisterHandler<SimpleEventClass>(typeof(SimpleEventHandler));
             Assert.True(eventBus.HasHandlerFor<DerivedSimpleEventClass>());
         }
@@ -25,7 +25,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void HaveToFindHandlerOfConcreteEventType_RegisteredByGenerics()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             eventBus.RegisterHandler<SimpleEventHandler, SimpleEventClass>();
             Assert.True(eventBus.HasHandlerFor<SimpleEventClass>());
         }
@@ -33,7 +33,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void HaveToFindHandlerOfDerivedEventType_RegisteredByGenerics()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             eventBus.RegisterHandler<SimpleEventHandler, SimpleEventClass>();
             Assert.True(eventBus.HasHandlerFor<DerivedSimpleEventClass>());
         }
@@ -41,7 +41,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void HaveToFindHandlerOfConcreteEventType_RegisteredByInstance()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             var handler = new SimpleEventHandler();
             eventBus.RegisterHandler(handler);
             Assert.True(eventBus.HasHandlerFor<SimpleEventClass>());
@@ -50,7 +50,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void HaveToFindHandlerOfDerivedEventType_RegisteredByInstance()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             var handler = new SimpleEventHandler();
             eventBus.RegisterHandler(handler);
             Assert.True(eventBus.HasHandlerFor<DerivedSimpleEventClass>());
@@ -59,7 +59,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void HaveToFailFindingUnregisterHandler()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             var reg = eventBus.RegisterHandler<SimpleEventHandler, SimpleEventClass>();
             reg.Unregister();
             Assert.False(eventBus.HasHandlerFor<SimpleEventClass>());
@@ -68,7 +68,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void CanHaveMultipleHandlersForOneEvent()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             eventBus.RegisterHandler<SimpleEventHandler, SimpleEventClass>();
             eventBus.RegisterHandler<SimpleEventHandler, SimpleEventClass>();
             eventBus.RegisterHandler<DerivedSimpleEventHandler, DerivedSimpleEventClass>();
@@ -79,7 +79,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void HaveToFindHandlerUsingGenericEventType()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             eventBus.RegisterHandler<CreateEntityPersonEventHandler, CreateEntityEvent<Person>>();
             Assert.True(eventBus.HasHandlerFor<CreateEntityEvent<Person>>());
             Assert.True(eventBus.HasHandlerFor<CreatePersonEvent>());
@@ -88,7 +88,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void HaveToFindHandlerUsingGenericEventTypeWithDerivedTypeArgument()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             eventBus.RegisterHandler<CreateEntityEventHandler, CreateEntityEvent<Entity>>();
             Assert.True(eventBus.HasHandlerFor<CreateEntityEvent<Person>>());
             // Assert.True(eventBus.HasHandlerFor<CreatePersonEvent>());

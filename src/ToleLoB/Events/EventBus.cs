@@ -2,12 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using ToleLoB.DependencyResolver;
 
 namespace ToleLoB.Events
 {
     public class EventBus
     {
+        public EventBus(IDependencyResolver resolver)
+        {
+            _resolver = resolver;
+        }
         private IList<EventHandlerRegistration> _registrations = new List<EventHandlerRegistration>();
+        private IDependencyResolver _resolver;
         public IEventHandlerRegistration RegisterHandler<TEvent>(EventHandler<TEvent> handler)
             where TEvent : EventBase
         {
@@ -83,7 +89,7 @@ namespace ToleLoB.Events
 
         private IEventHandler CreateHandlerInstance(Type handlerType)
         {
-            return Activator.CreateInstance(handlerType) as IEventHandler;
+            return _resolver.Resolve(handlerType) as IEventHandler;
         }
 
         private bool Match(EventHandlerRegistration reg, Type eventType)

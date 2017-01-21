@@ -1,15 +1,16 @@
 using Xunit;
-//using System;
 using Moq;
 
 namespace ToleLoB.Events.Tests
 {
     public class EventBusTrigger
     {
+        private ObjectCreatorResolver _resolver = new ObjectCreatorResolver();
+
         [Fact]
         public void HandlerIsCalled()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             var handlerMock = new Mock<SimpleEventHandler>();
             var ev = new SimpleEventClass();
 
@@ -22,7 +23,7 @@ namespace ToleLoB.Events.Tests
         [Fact]
         public void HandlerIsCalledAllwaysThatEventTriggers()
         {
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             var handlerMock = new Mock<SimpleEventHandler>();
             eventBus.RegisterHandler(handlerMock.Object);
 
@@ -38,7 +39,7 @@ namespace ToleLoB.Events.Tests
         public void HandlersIsCalled_UsingDerivedEvent()
         {
             //Given
-            var eventBus = new EventBus();
+            var eventBus = new EventBus(_resolver);
             var handlerMock = new Mock<SimpleEventHandler>();
             var ev = new DerivedSimpleEventClass();
 

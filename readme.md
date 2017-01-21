@@ -53,3 +53,10 @@ eventBusObject.RegisterHandler(new SimpleEventHandler()); // One instance for al
 // OR
 eventBusObject.RegisterHandler<SimpleEventHandler, SimpleEventClass>(); // New instance for each triggers
 ````
+
+EventBus use `IDependencyResolver` from DependencyResolver exercise in order to create news handlers.
+EventBus tests use a simple implementation that create a new object for each `resolve` method call.
+
+### DependencyResolver
+
+DependencyResolver add an interface to implementing a service locator pattern. It's used from others exercises in order to create new objects from a given type.
