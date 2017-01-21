@@ -11,42 +11,74 @@ namespace ToleLoB.Events
         public IEventHandlerRegistration RegisterHandler<TEvent>(EventHandler<TEvent> handler)
             where TEvent : EventBase
         {
-            var reg = new EventHandlerRegistration(this, handler);
+            var reg = new EventHandlerRegistration<TEvent>(this, handler);
             _registrations.Add(reg);
             return reg;
         }
-        public IEventHandlerRegistration RegisterHandler<TEventHandler>()
-            where TEventHandler : IEventHandler
+        public IEventHandlerRegistration RegisterHandler<TEventHandler, TEvent>()
+            where TEventHandler : IEventHandler<TEvent>
+            where TEvent : EventBase
         {
-            var reg = new EventHandlerRegistration(this, typeof(TEventHandler));
+            var reg = new EventHandlerRegistration<TEvent>(this, typeof(TEventHandler));
             _registrations.Add(reg);
             return reg;
         }
 
-        public IEventHandlerRegistration RegisterHandler(Type handlerType)
+        public IEventHandlerRegistration RegisterHandler<TEvent>(Type handlerType)
+            where TEvent : EventBase
         {
-            var reg = new EventHandlerRegistration(this, handlerType);
+            var reg = new EventHandlerRegistration<TEvent>(this, handlerType);
             _registrations.Add(reg);
             return reg;
         }
 
         public void Unregister(IEventHandlerRegistration registration)
         {
-            var reg = registration as EventHandlerRegistration;
+            var reg = (EventHandlerRegistration)registration;
             _registrations.Remove(reg);
         }
 
         public bool HasHandlerFor<TEvent>() where TEvent : EventBase
         {
-            return GetHandlerRegistrations(typeof(TEvent)).Count() > 0;
+            return GetHandlerRegistrations<TEvent>().Count() > 0;
         }
 
-        public IList<IEventHandler<TEvent>> GetHandlersFor<TEvent>()
+        public IList<IEventHandler> GetHandlersFor<TEvent>()
             where TEvent : EventBase
         {
-            return GetHandlerRegistrations(typeof(TEvent))
-                .Select(r => (r.HandlerInstance ?? this.CreateHandlerInstance(r.HandlerType)) as IEventHandler<TEvent>)
+            return GetHandlerRegistrations<TEvent>()
+                .Select(r =>
+                {
+                    if (r.HandlerInstance == null)
+                        return this.CreateHandlerInstance(r.HandlerType);
+                    return r.HandlerInstance;
+                })
                 .ToList();
+        }
+
+        public void Trigger<TEvent>(TEvent ev)
+            where TEvent : EventBase
+        {
+            var handlers = GetHandlersFor<TEvent>();
+            var exceptionList = new List<Exception>();
+            foreach (var h in handlers)
+            {
+                try
+                {
+                    h.Run(ev);
+                }
+                catch (Exception ex)
+                {
+                    exceptionList.Add(ex);
+                }
+            }
+            if (exceptionList.Count() > 0)
+            {
+                if (exceptionList.Count() == 1)
+                    throw exceptionList[0];
+                else
+                    throw new AggregateException(exceptionList);
+            }
         }
 
         private IEventHandler CreateHandlerInstance(Type handlerType)
@@ -82,13 +114,13 @@ namespace ToleLoB.Events
                     }
                 }
             }
-
             return result;
         }
 
-        private List<EventHandlerRegistration> GetHandlerRegistrations(Type eventType)
+        private List<EventHandlerRegistration> GetHandlerRegistrations<TEvent>()
+            where TEvent : EventBase
         {
-            return _registrations.Where(r => Match(r, eventType)).ToList();
+            return _registrations.Where(r => Match(r, typeof(TEvent))).ToList();
         }
     }
 }
