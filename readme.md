@@ -9,9 +9,9 @@ You can contribute with the project by creating new exercises, or creating an is
 
 Here are some advices:
 
-[*] The issues can be wrote in English or Spanish language.
-[*] The tests are not needed, although is a good practice.
-[*] The exercises can use classes from others exercises.
+* The issues can be wrote in English or Spanish language.
+* The tests are not needed, although is a good practice.
+* The exercises can use classes from others exercises.
 
 All contribution are welcome.
 
