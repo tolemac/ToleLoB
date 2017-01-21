@@ -72,8 +72,8 @@ namespace ToleLoB.Events.Tests
             eventBus.RegisterHandler<SimpleEventHandler, SimpleEventClass>();
             eventBus.RegisterHandler<SimpleEventHandler, SimpleEventClass>();
             eventBus.RegisterHandler<DerivedSimpleEventHandler, DerivedSimpleEventClass>();
-            Assert.Equal(eventBus.GetHandlersFor<SimpleEventClass>().Count, 2);
-            Assert.Equal(eventBus.GetHandlersFor<DerivedSimpleEventClass>().Count, 3);
+            Assert.Equal(eventBus.GetHandlerTypesFor<SimpleEventClass>().Length, 2);
+            Assert.Equal(eventBus.GetHandlerTypesFor<DerivedSimpleEventClass>().Length, 3);
         }
 
         [Fact]

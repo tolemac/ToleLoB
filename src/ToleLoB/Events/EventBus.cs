@@ -49,7 +49,18 @@ namespace ToleLoB.Events
             return GetHandlerRegistrations<TEvent>().Count() > 0;
         }
 
-        public IList<IEventHandler> GetHandlersFor<TEvent>()
+        public Type[] GetHandlerTypesFor<TEvent>()
+            where TEvent : EventBase
+        {
+            return GetHandlerRegistrations<TEvent>()
+                .Select(r =>
+                {
+                    return r.HandlerType;
+                })
+                .ToArray();
+        }
+
+        private IList<IEventHandler> GetHandlersFor<TEvent>()
             where TEvent : EventBase
         {
             return GetHandlerRegistrations<TEvent>()
