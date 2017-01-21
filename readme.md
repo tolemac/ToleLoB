@@ -2,7 +2,15 @@
 
 ToleLob is a little project about several an exercises, these exercises are about implementing some patters and small pieces of code, witch are designed to be used in Line Of Bussiness Applications.
 
-## EventBus
+
+# Contributing
+You can contribute with the project by creating new exercises, or creating an issue writing about some exercise aproach, or code correction, or new exercise proposal.
+
+All contributing is welcome.
+
+# Exercises
+
+### EventBus
 
 EventBus is a resource where you can register event handlers, these event handlers are designed to be executed when a concrete event type is triggered.
 
@@ -38,4 +46,3 @@ eventBusObject.RegisterHandler(new SimpleEventHandler()); // One instance for al
 // OR
 eventBusObject.RegisterHandler<SimpleEventHandler, SimpleEventClass>(); // New instance for each triggers
 ````
-
