@@ -5,7 +5,7 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "ToleLoB.Events": {
+    "ToleLoB": {
       "version": "1.0.0",
       "target": "project"
     },

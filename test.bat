@@ -1,1 +1,1 @@
-dotnet test ./test/ToleLoB.Events.Tests
+dotnet test ./test/ToleLoB.Tests
