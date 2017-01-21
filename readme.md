@@ -1,12 +1,19 @@
 # ToleLoB project
 
-ToleLob is a little project about several an exercises, these exercises are about implementing some patters and small pieces of code, witch are designed to be used in Line Of Bussiness Applications.
+ToleLob is a little .NET Core C# project about several exercises, these exercises are about implementing some patters and small pieces of code, witch are designed to be used in Line Of Bussiness Applications.
 
+Each folder in `src` folder corresponds to an exercise. The same for `test` folder.
 
 # Contributing
 You can contribute with the project by creating new exercises, or creating an issue writing about some exercise aproach, or code correction, or new exercise proposal.
 
-All contributing is welcome.
+Here are some advices:
+
+[*] The issues can be wrote in English or Spanish language.
+[*] The tests are not needed, although is a good practice.
+[*] The exercises can use classes from others exercises.
+
+All contribution are welcome.
 
 # Exercises
 
