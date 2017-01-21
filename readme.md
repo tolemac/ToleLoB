@@ -17,7 +17,7 @@ All contribution are welcome.
 
 # Exercises
 
-### EventBus
+## EventBus
 
 EventBus is a resource where you can register event handlers, these event handlers are designed to be executed when a concrete event type is triggered.
 
@@ -57,6 +57,6 @@ eventBusObject.RegisterHandler<SimpleEventHandler, SimpleEventClass>(); // New i
 EventBus use `IDependencyResolver` from DependencyResolver exercise in order to create news handlers.
 EventBus tests use a simple implementation that create a new object for each `resolve` method call.
 
-### DependencyResolver
+## DependencyResolver
 
 DependencyResolver add an interface to implementing a service locator pattern. It's used from others exercises in order to create new objects from a given type.
