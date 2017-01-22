@@ -17,6 +17,10 @@ All contribution are welcome.
 
 # Exercises
 
+## DependencyResolver
+
+DependencyResolver add an interface to implementing a service locator pattern. It's used from others exercises in order to create new objects from a given type.
+
 ## EventBus
 
 EventBus is a resource where you can register event handlers, these event handlers are designed to be executed when a concrete event type is triggered.
@@ -57,6 +61,69 @@ eventBusObject.RegisterHandler<SimpleEventHandler, SimpleEventClass>(); // New i
 EventBus use `IDependencyResolver` from DependencyResolver exercise in order to create news handlers.
 EventBus tests use a simple implementation that create a new object for each `resolve` method call.
 
-## DependencyResolver
+## CQRS
 
-DependencyResolver add an interface to implementing a service locator pattern. It's used from others exercises in order to create new objects from a given type.
+This exercise is about a particular implementation of CQRS. In this system you have commands that change certains state items (or state elements) and you have queries that query some elements of the state. `QuerySystem` saves each query result in a cache, the next time the same query is run with the same parameters QuerySystem doesn't run the query, it returns the last cached result. When you execute a command `CommandSystem` synchronize with `QuerySystem` passing the state elements affected by the command, then `QuerySystem` purge results from cache of queries that query the same state items.
+
+Query example. It's a query that query suppliers from application state, in the constructor `Supplier` is added to `QueryStateItemList` in order to set `Supplier` as state element that this query consume:
+
+```` csharp
+public class GetSuppliersQuery : Query<GetSuppliersQueryInput, GetSuppliersQueryOutput>
+{
+    public GetSuppliersQuery()
+    {
+        QueryedStateItemsList.Add(typeof(Supplier));
+    }
+    public override GetSuppliersQueryOutput Run(GetSuppliersQueryInput parameters)
+    {
+        return ...;
+    }
+}
+````
+
+Command example. In this case we have a command that add an element to the state. `Supplier` is marked as a state item that that command affect.
+
+```` csharp
+public class CreateSupplierCommand : Command<CreateSupplierParameters>
+{
+    public CreateSupplierCommand()
+    {
+        StateItemsAffectedsList.Add(typeof(Supplier));
+    }
+    public override void Execute(CreateSupplierParameters parameters) { }
+}
+````
+
+When `CommandSystem` executes `CreateSupplierCommand` it purges the query results of queries that work with `typeof(Supplier)`.
+
+The affected state items list of a command or the queryed state items list of a query is a list of objects, they don't have to be a `Type` you can do:
+
+```` csharp
+// In query constructor 
+QueryedStateItemsList.Add("ClientInvoices");
+
+// In command constructor
+StateItemsAffectedsList.Add("ClientInvoices");
+````
+When the command is executed `QuerySystem` will search by results of queries that have `"ClientInvoices"` in his `QueryedStateItemsList`.
+
+Finally an example of command that change more than one state element:
+
+```` csharp
+public class CreateInvoiceCommand : Command<CreateInvoiceParameters>
+{
+    public CreateInvoiceCommand()
+    {
+        StateItemsAffectedsList.AddRange(new[] {
+            typeof(Invoice),
+            typeof(InvoiceDetail),
+            typeof(Customer),
+            typeof(Supplier),
+            "Stock"
+        });
+    }
+    public override void Execute(CreateInvoiceParameters parameters) { }
+}
+````
+
+The execution of that command invalidate the cached results of all queries that have at least one of affected state items: `typeof(Invoice)`, `typeof(InvoiceDetail)`, `typeof(Customer)`, `typeof(Supplier)` or `"Stock"`.
