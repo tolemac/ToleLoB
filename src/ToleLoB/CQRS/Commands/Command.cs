@@ -1,11 +1,17 @@
+using System.Collections.Generic;
+
 namespace ToleLoB.CQRS.Commands
 {
     public interface ICommand
     {
         void Execute(object parameters);
+        object[] StateItemsAffecteds { get; }
     }
     public abstract class Command : ICommand
     {
+        protected List<object> StateItemsAffectedsList = new List<object>();
+        public object[] StateItemsAffecteds { get { return StateItemsAffectedsList.ToArray(); } }
+
         public abstract void Execute(object parameters);
     }
 
@@ -13,9 +19,9 @@ namespace ToleLoB.CQRS.Commands
     {
         void Execute(TParameters parameters);
     }
-    public abstract class Command<TParameters> : ICommand<TParameters>
+    public abstract class Command<TParameters> : Command, ICommand<TParameters>
     {
-        public void Execute(object parameters)
+        public override void Execute(object parameters)
         {
             Execute((TParameters)parameters);
         }
