@@ -11,7 +11,7 @@ namespace ToleLoB.Tests.Sql
         {
             var b = new SqlBuilder();
 
-            b.SetMainTable<Invoice>("WH", "Invoices", "T1");
+            b.SetMainTable<Invoice>("WH", "Invoices", "T1").AddColumn(i => i.Code, i => i.Date);
             b.AddJoin<InvoiceDetail>("WH", "InvoiceDetail", "T2")
                 .Condition.Set<Invoice>((d, i) => i.Id == d.InvoiceId && d.Price > 0 && i.Total > 0);
             b.AddJoin<Customer>("WH", "Customer", "T3")
@@ -20,6 +20,7 @@ namespace ToleLoB.Tests.Sql
             b.Order.Ascend<Customer>(c => c.Id).Descend<Invoice>(i => i.Date);
 
             Assert.NotNull(b._mainTable);
+            Assert.Equal(b._mainTable.PropertyExpression.Count, 2);
             Assert.Equal(b.Joins.Count, 2);
             Assert.Equal(b.Where.ExpressionList.Count, 1);
             Assert.Equal(b.Order.ExpressionList.Count, 2);

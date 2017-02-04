@@ -3,6 +3,7 @@ using System.Linq;
 using ToleLoB.Sql.Exceptions;
 using ToleLoB.Sql.Where;
 using ToleLoB.Sql.Table;
+using System;
 
 namespace ToleLoB.Sql
 {
@@ -14,9 +15,11 @@ namespace ToleLoB.Sql
         public IReadOnlyList<SqlJoin> Joins { get { return _joins; } }
         public SqlOrder Order { get; set; } = new SqlOrder();
 
-        public SqlTable SetMainTable<TEntity>(string schemaName = null, string tableName = null, string alias = null)
+        public SqlTable<TEntity> SetMainTable<TEntity>(string schemaName = null, string tableName = null, string alias = null)
         {
-            return _mainTable = new SqlTable(schemaName, tableName, alias, typeof(TEntity));
+            var result = new SqlTable<TEntity>(schemaName, tableName, alias, typeof(TEntity));
+            _mainTable = result;
+            return result;
         }
 
         public SqlJoin<TTableEntity> AddJoin<TTableEntity>(
@@ -42,6 +45,10 @@ namespace ToleLoB.Sql
             return result;
         }
 
+        public SqlJoin Join(Type tableEntityType)
+        {
+            return _joins.Single(j => j.EntityType == tableEntityType);
+        }
         public SqlJoin Join<TTableEntity>()
         {
             return _joins.Single(j => j.EntityType == typeof(TTableEntity));
